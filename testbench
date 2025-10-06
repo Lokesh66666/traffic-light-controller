@@ -1,0 +1,61 @@
+`timescale 1ns / 1ps
+
+module tb_traffic_light_controller;
+
+    
+    reg clk;
+    reg reset;
+    reg pedestrian_request;
+    wire [2:0] traffic_light;
+    wire pedestrian_light;
+
+    
+    traffic_light_controller uut (
+        .clk(clk),
+        .reset(reset),
+        .pedestrian_request(pedestrian_request),
+        .traffic_light(traffic_light),
+        .pedestrian_light(pedestrian_light)
+    );
+
+    
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk; 
+    end
+
+    
+    initial begin
+        
+        reset = 1;
+        pedestrian_request = 0;
+
+       
+        #20 reset = 0;
+
+        
+        #100;
+
+       
+        pedestrian_request = 1;
+        #10 pedestrian_request = 0;
+
+        
+        #200;
+
+        pedestrian_request = 1;
+        #10 pedestrian_request = 0;
+
+        #300;
+
+        
+        $stop;
+    end
+
+    
+    initial begin
+        $monitor("Time=%0t | Traffic Light={R,Y,G}=%b | Pedestrian=%b",
+                  $time, traffic_light, pedestrian_light);
+    end
+
+endmodule
