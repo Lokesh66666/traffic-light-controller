@@ -1,0 +1,39 @@
+`timescale 1ns/1ps
+
+module tb_traffic_light_controller();
+
+    // Testbench signals
+    reg clk;
+    reg reset;
+    reg pedestrian_request;
+    wire [2:0] traffic_light;
+    wire pedestrian_light;
+
+    // Instantiate the DUT (Device Under Test)
+    traffic_light_controller dut (
+        .clk(clk),
+        .reset(reset),
+        .pedestrian_request(pedestrian_request),
+        .traffic_light(traffic_light),
+        .pedestrian_light(pedestrian_light)
+    );
+
+    // Clock Generation (10ns period = 100 MHz clock)
+    always #5 clk = ~clk;
+
+    // Test Sequence
+    initial begin
+        // Initialize
+        clk = 0;
+        reset = 1;
+        pedestrian_request = 0;
+        
+        // Apply reset
+        #20 reset = 0;
+
+        // Normal traffic cycle (no pedestrian)
+        #200;
+
+        // Pedestrian requests crossing
+        pedestrian_request = 1;
+        #50
